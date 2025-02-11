@@ -24,7 +24,6 @@ env = environ.Env(
 environ.Env.read_env(BASE_DIR / '.env')
 
 # Now you can use environment variables
-DEBUG = env('DEBUG', default=False)
 CLERK_SECRET_KEY = env('CLERK_SECRET_KEY')
 
 AUTH_USER_MODEL = 'clerkAuth.User'
@@ -68,9 +67,12 @@ MIDDLEWARE = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "clerkAuth.authentication.ClerkAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticated",
+    ],
 }
 
 

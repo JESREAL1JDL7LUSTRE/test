@@ -1,16 +1,14 @@
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 
-@csrf_exempt
-def test_auth(request):
-    auth_header = request.headers.get('Authorization')
+def account_data(request):
+    """Return user data for authenticated requests."""
+    if not hasattr(request, "clerk_state") or request.clerk_state is None:
+        return JsonResponse({"error": "Unauthorized"}, status=401)
+
+    return JsonResponse({
+        "message": "Authenticated successfully",
+        "user_id": request.clerk_state.payload.get("sub"),
+    })
     
-    if not auth_header:
-        return JsonResponse({"error": "No Authorization header"}, status=403)
 
-    token = auth_header.split("Bearer ")[-1].strip()
 
-    import jwt
-    decoded = jwt.decode(token, options={"verify_signature": False})  # Only for testing!
-    
-    return JsonResponse({"message": "Authenticated!", "decoded": decoded})
